@@ -9,6 +9,10 @@ def generate_flashcards(text, model="gpt-3.5-turbo"):
         "Text:\n" + text
     )
 
+    # Temporary fix to input that's too long
+    if len(prompt) > 16000:
+        prompt = prompt[:16000]
+
     response = openai.ChatCompletion.create(
         model=model,
         messages=[
