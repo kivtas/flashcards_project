@@ -1,6 +1,6 @@
+import re
 import openai
 
-# Create flashcards using the OpenAI API
 def generate_flashcards(text, model="gpt-3.5-turbo"):
     prompt = (
         "Based on the following text, generate 10 flashcards. "
@@ -23,4 +23,17 @@ def generate_flashcards(text, model="gpt-3.5-turbo"):
         max_tokens=1000
     )
 
-    return response['choices'][0]['message']['content']
+    flashcards_text = response['choices'][0]['message']['content']
+    
+    # Parse the flashcards into an array of objects
+    flashcards = []
+    flashcard_pairs = flashcards_text.strip().split("\n\n")
+
+    for pair in flashcard_pairs:
+        match = re.match(r"Q: (.*)\nA: (.*)", pair)
+        if match:
+            question = match.group(1)
+            answer = match.group(2)
+            flashcards.append({"question": question, "answer": answer})
+
+    return flashcards
